@@ -4,7 +4,7 @@ A GWT port of the [DUI.Stream](http://github.com/digg/stream) library.
 
 ## Usage
 
-See [Demo.java](http://github.com/teropa/gwt-mxhr/blob/master/src/teropa/gwtmxhr/client/Demo.java)
+See [Demo.java](http://github.com/teropa/gwt-mxhr/blob/master/src/teropa/mxhr/client/Demo.java)
 
 ## License
 
