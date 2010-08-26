@@ -1,5 +1,6 @@
 package teropa.mxhr.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
@@ -25,6 +26,7 @@ public class MultiXMLHttpRequest {
 				readyStateNanny();
 			}
 		});
+		req.send();
 	}
 
 	private void readyStateNanny() {
@@ -76,6 +78,8 @@ public class MultiXMLHttpRequest {
 			}
 		}
 		
+//		GWT.log("s: "+startFlag+", e: "+endFlag+", p: "+packet);
+		
 		if (currentStream == null) {
 			currentStream = "";
 			if (startFlag > -1) {
@@ -83,7 +87,7 @@ public class MultiXMLHttpRequest {
 					String payload = packet.substring(startFlag, endFlag);
 					currentStream += payload;
 					closeCurrentStream();
-					packet = packet.replace(payload, "");
+					packet = packet.substring(endFlag);
 					processPacket(packet);
 				} else {
 					currentStream += packet.substring(startFlag);
@@ -94,7 +98,7 @@ public class MultiXMLHttpRequest {
 				String chunk = packet.substring(0, endFlag);
 				currentStream += chunk;
 				closeCurrentStream();
-				packet = packet.replace(chunk, "");
+				packet = packet.substring(endFlag);
 				processPacket(packet);
 			} else {
 				currentStream += packet;
@@ -103,14 +107,18 @@ public class MultiXMLHttpRequest {
 	}
 	
 	private void closeCurrentStream() {
+		
 		currentStream = currentStream.replace(boundary + "\n", "");
+//		GWT.log("closing on "+currentStream);
 		String[] mimeAndPayload = currentStream.split("\n");
 		String mime = mimeAndPayload[0].split("Content-Type:", 2)[1].split(";", 1)[0].replace(" ", "");
+//		GWT.log("mime: "+mime);
 		String payload = "";
 		for (int i=1 ; i<mimeAndPayload.length ; i++) {
 			payload += mimeAndPayload[i];
 			if (i < mimeAndPayload.length - 1) payload += "\n";
 		}
+//		GWT.log("payload: "+payload);
 		handlers.fireEvent(new ContentReceivedEvent(mime, payload));
 		this.currentStream = null;
 	}
