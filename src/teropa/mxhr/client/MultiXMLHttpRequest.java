@@ -1,6 +1,5 @@
 package teropa.mxhr.client;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
@@ -49,7 +48,7 @@ public class MultiXMLHttpRequest {
 				pong.cancel();
 			}
 			ping();
-			// Fire complete
+			handlers.fireEvent(new ContentCompleteEvent());
 			req.clearOnReadyStateChange();
 		}
 	}
@@ -78,7 +77,6 @@ public class MultiXMLHttpRequest {
 			}
 		}
 		
-//		GWT.log("s: "+startFlag+", e: "+endFlag+", p: "+packet);
 		
 		if (currentStream == null) {
 			currentStream = "";
@@ -109,16 +107,13 @@ public class MultiXMLHttpRequest {
 	private void closeCurrentStream() {
 		
 		currentStream = currentStream.replace(boundary + "\n", "");
-//		GWT.log("closing on "+currentStream);
 		String[] mimeAndPayload = currentStream.split("\n");
 		String mime = mimeAndPayload[0].split("Content-Type:", 2)[1].split(";", 1)[0].replace(" ", "");
-//		GWT.log("mime: "+mime);
 		String payload = "";
 		for (int i=1 ; i<mimeAndPayload.length ; i++) {
 			payload += mimeAndPayload[i];
 			if (i < mimeAndPayload.length - 1) payload += "\n";
 		}
-//		GWT.log("payload: "+payload);
 		handlers.fireEvent(new ContentReceivedEvent(mime, payload));
 		this.currentStream = null;
 	}
@@ -132,10 +127,14 @@ public class MultiXMLHttpRequest {
 		});
 	}
 	
-	public HandlerRegistration registerContentReceivedHandler(ContentReceivedHandler handler) {
+	public HandlerRegistration addContentReceivedHandler(ContentReceivedHandler handler) {
 		return handlers.addHandler(ContentReceivedEvent.TYPE, handler);
 	}
-	
+
+	public HandlerRegistration addContentCompleteHandler(ContentCompleteHandler handler) {
+		return handlers.addHandler(ContentCompleteEvent.TYPE, handler);
+	}
+
 	private static native XMLHttpRequest createReq() /*-{
 		try {
 			return new ActiveXObject('MSXML2.XMLHTTP.6.0');

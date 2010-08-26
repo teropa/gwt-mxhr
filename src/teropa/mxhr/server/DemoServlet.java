@@ -20,8 +20,6 @@ public class DemoServlet extends HttpServlet {
 		resp.setHeader("MIME-Version", "1.0");
 		resp.setContentType("multipart/mixed; boundary=\"|||\"");
 		
-		System.out.println(System.getProperty("user.dir"));
-		
 		Writer writer = resp.getWriter();
 		
 		String payload = new String(Base64.encodeBase64(getImage()));
