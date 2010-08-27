@@ -3,7 +3,7 @@
 Gwt-mxhr is a  GWT port of the [DUI.Stream](http://github.com/digg/stream) library.
 
 It leverages a technique called Multipart XMLHttpRequest (described in a [blog post by the Digg guys](http://about.digg.com/blog/duistream-and-mxhr))
-which is useful in situations where a large amount of dynamic resources (images, CSS, JavaScript, ect.) need to 
+which is useful in situations where a large amount of dynamic resources (images, CSS, JavaScript, ect.) needs to 
 be fetched from the server. It eliminates the HTTP overhead by streaming the resources back in
 a single HTTP response.
 
