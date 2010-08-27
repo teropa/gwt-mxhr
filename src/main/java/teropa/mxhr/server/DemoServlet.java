@@ -33,7 +33,6 @@ public class DemoServlet extends HttpServlet {
 		writer.write("\n--|||--\n");
 		writer.flush();
 		writer.close();
-		
 	}
 
 	private byte[] getImage() throws IOException {

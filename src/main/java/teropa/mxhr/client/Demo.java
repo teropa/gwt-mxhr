@@ -21,7 +21,7 @@ public class Demo implements EntryPoint {
 	}
 
 	private void loadStream() {
-		MultiXMLHttpRequest req = new MultiXMLHttpRequest();
+		MXHR req = new MXHR();
 		final long streamStart = System.currentTimeMillis();
 		
 		req.addContentReceivedHandler(new ContentReceivedHandler() {

@@ -6,14 +6,14 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.xhr.client.ReadyStateChangeHandler;
 import com.google.gwt.xhr.client.XMLHttpRequest;
 
-public class MultiXMLHttpRequest {
+public class MXHR {
 
 	private XMLHttpRequest req;
 	
 	private Timer pong;
 	private int lastLength = 0;
 	private String boundary;
-	private String currentStream;
+	private StringBuilder currentStream;
 	
 	private HandlerManager handlers = new HandlerManager(this);
 	
@@ -79,35 +79,35 @@ public class MultiXMLHttpRequest {
 		
 		
 		if (currentStream == null) {
-			currentStream = "";
+			currentStream = new StringBuilder();
 			if (startFlag > -1) {
 				if (endFlag > -1) {
 					String payload = packet.substring(startFlag, endFlag);
-					currentStream += payload;
+					currentStream.append(payload);
 					closeCurrentStream();
 					packet = packet.substring(endFlag);
 					processPacket(packet);
 				} else {
-					currentStream += packet.substring(startFlag);
+					currentStream.append(packet.substring(startFlag));
 				}
 			}
 		} else {
 			if (endFlag > -1) {
 				String chunk = packet.substring(0, endFlag);
-				currentStream += chunk;
+				currentStream.append(chunk);
 				closeCurrentStream();
 				packet = packet.substring(endFlag);
 				processPacket(packet);
 			} else {
-				currentStream += packet;
+				currentStream.append(packet);
 			}
 		}
 	}
 	
 	private void closeCurrentStream() {
-		
-		currentStream = currentStream.replace(boundary + "\n", "");
-		String[] mimeAndPayload = currentStream.split("\n");
+		String result = currentStream.toString();
+		result = result.replace(boundary + "\n", "");
+		String[] mimeAndPayload = result.split("\n");
 		String mime = mimeAndPayload[0].split("Content-Type:", 2)[1].split(";", 1)[0].replace(" ", "");
 		String payload = "";
 		for (int i=1 ; i<mimeAndPayload.length ; i++) {
